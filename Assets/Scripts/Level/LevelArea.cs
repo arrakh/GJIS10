@@ -16,6 +16,7 @@ namespace Level
         [SerializeField] private Vector3[] safePoints;
         [SerializeField] private BoxCollider2D collider;
         [SerializeField] private Collectible[] collectibles;
+        [SerializeField] private float orthographicSize = 8f;
         [HideInInspector] public UnityEvent<LevelArea> onEnter;
 
         private int collectedCount;
@@ -41,6 +42,7 @@ namespace Level
             if (!col.TryGetComponent(out PlayerController controller)) return;
             
             onEnter?.Invoke(this);
+            Debug.Log($"WILL PRINT {collectedCount} AND {collectibles.Length}", gameObject);
             OnCollectableCountUpdate?.Invoke(collectedCount, collectibles.Length);
             controller.SetRespawnPoint(GetClosestSafePoint(controller.transform.position));
         }
@@ -74,9 +76,9 @@ namespace Level
             if (cam == null) return;
             
             if (collider == null) collider = GetComponent<BoxCollider2D>();
-
-            var size = cam.orthographicSize;
-            collider.size = new Vector2(cam.aspect * size * 2, size * 2);
+            
+            if (orthographicSize.Equals(0f)) orthographicSize = cam.orthographicSize;
+            collider.size = new Vector2(cam.aspect * orthographicSize * 2, orthographicSize * 2);
         }
 
         private void OnDrawGizmos()

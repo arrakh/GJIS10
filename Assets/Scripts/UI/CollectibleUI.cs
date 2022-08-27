@@ -17,6 +17,7 @@ namespace UI
 
         private void OnUpdateCount(int count, int outOf)
         {
+            Debug.Log("UPDATED COUNT");
             tempInfo.text = $"{count} / {outOf}";
         }
     }

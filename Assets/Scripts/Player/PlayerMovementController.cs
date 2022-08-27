@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using DefaultNamespace;
+using MoreMountains.Feedbacks;
 using UnityEngine;
 
 public class PlayerMovementController : MonoBehaviour
@@ -9,6 +10,8 @@ public class PlayerMovementController : MonoBehaviour
     [Space]
     [Header("Stats")]
     public float speed = 10;
+    public float speedGain = 1;
+    public float speedClamp = 20;
     public float jumpForce = 50;
     public float slideSpeed = 5;
     public float wallJumpLerp = 10;
@@ -21,6 +24,12 @@ public class PlayerMovementController : MonoBehaviour
     public bool wallJumped;
     public bool wallSlide;
 
+    [Space] 
+    public MMF_Player jumpEffect;
+    public MMF_Player landEffect;
+
+    [Space] public SpriteRenderer spriteRenderer;
+
     [Space]
     private PlayerCollision coll;
     private Rigidbody2D rb;
@@ -28,6 +37,9 @@ public class PlayerMovementController : MonoBehaviour
     
     private bool groundTouch;
     private int jumpCount;
+
+    private float acceleration;
+    private float lastX;
 
     // Start is called before the first frame update
     void Start()
@@ -43,6 +55,8 @@ public class PlayerMovementController : MonoBehaviour
         float x = Input.GetAxis("Horizontal");
         float y = Input.GetAxis("Vertical");
         Vector2 dir = new Vector2(x, y);
+
+        spriteRenderer.flipX = dir.x < 0;
 
         Walk(dir);
 
@@ -105,6 +119,7 @@ public class PlayerMovementController : MonoBehaviour
         {
             groundTouch = true;
             jumpCount = 0;
+            landEffect.PlayFeedbacks();
         }
 
         if(!coll.onGround && groundTouch)
@@ -147,21 +162,32 @@ public class PlayerMovementController : MonoBehaviour
 
         if (wallGrab)
             return;
+        
+        if (coll.onGround && (dir.x > lastX || dir.x < lastX))
+        {
+            lastX = dir.x;
+            acceleration = 0f;
+        }
 
-        if (!wallJumped)
-        {
-            rb.velocity = new Vector2(dir.x * speed, rb.velocity.y);
-        }
-        else
-        {
-            rb.velocity = Vector2.Lerp(rb.velocity, (new Vector2(dir.x * speed, rb.velocity.y)), wallJumpLerp * Time.deltaTime);
-        }
+        acceleration += speedGain * Time.deltaTime;
+        var finalSpeed = Mathf.Clamp(acceleration + speed, 0, speedClamp);
+
+        if (!wallJumped) rb.velocity = new Vector2(dir.x * finalSpeed, rb.velocity.y);
+        else rb.velocity = Vector2.Lerp(rb.velocity, (new Vector2(dir.x * finalSpeed, rb.velocity.y)), wallJumpLerp * Time.deltaTime);
     }
 
     private void Jump(Vector2 dir, bool wall)
     {
         rb.velocity = new Vector2(rb.velocity.x, 0);
         rb.velocity += dir * jumpForce;
+        
+        jumpEffect.PlayFeedbacks();
+    }
+
+    public void ResetMovement()
+    {
+        if (rb != null) rb.velocity = Vector2.zero;
+        acceleration = 0f;
     }
 
     IEnumerator DisableMovement(float time)

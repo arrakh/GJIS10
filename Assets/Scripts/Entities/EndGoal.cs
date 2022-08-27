@@ -8,9 +8,9 @@ namespace Entities
     {
         public Action onGoal;
 
-        private void OnTriggerEnter(Collider other)
+        private void OnTriggerEnter2D(Collider2D col)
         {
-            if (!other.TryGetComponent(out PlayerController player)) return;
+            if (!col.TryGetComponent(out PlayerController player)) return;
             
             onGoal?.Invoke();
         }
