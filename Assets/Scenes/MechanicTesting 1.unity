@@ -169,7 +169,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 1.7775974, y: 1}
+    m_SensorSize: {x: 1.7771883, y: 1}
   m_Transitions:
     m_BlendHint: 0
     m_InheritPosition: 0
@@ -1123,7 +1123,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 28.441559, y: 16}
+  m_Size: {x: 28.45742, y: 16}
   m_EdgeRadius: 0
 --- !u!114 &973735251
 MonoBehaviour:
@@ -1202,7 +1202,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 28.441559, y: 16}
+  m_Size: {x: 28.45742, y: 16}
   m_EdgeRadius: 0
 --- !u!114 &1104304122
 MonoBehaviour:
@@ -1731,7 +1731,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 28.441559, y: 16}
+  m_Size: {x: 28.45742, y: 16}
   m_EdgeRadius: 0
 --- !u!4 &1548446357
 Transform:

@@ -8,6 +8,8 @@ namespace Player
 {
     public class PlayerController : MonoBehaviour
     {
+        public GameObject visual;
+        public Animator animator;
         public Rigidbody2D rigidBody;
         public PlayerMovementController movementController;
         public MMF_Player killFeedback;
@@ -28,6 +30,13 @@ namespace Player
         {
             SetEnable(false);
             Invoke(nameof(Respawn), 3f);
+            animator.SetTrigger("Death");
+            Invoke(nameof(KillEffect), 0.5f);
+        }
+
+        void KillEffect()
+        {
+            visual.SetActive(false);
             killFeedback.PlayFeedbacks();
         }
 
@@ -42,6 +51,7 @@ namespace Player
 
         public void SetEnable(bool enable)
         {
+            visual.SetActive(enable);
             rigidBody.simulated = enable;
             movementController.enabled = enable;
             if (enable) movementController.ResetMovement();

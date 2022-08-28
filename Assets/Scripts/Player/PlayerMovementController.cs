@@ -7,6 +7,8 @@ using UnityEngine;
 
 public class PlayerMovementController : MonoBehaviour
 {
+    public Animator animator;
+
     [Space]
     [Header("Stats")]
     public float speed = 10;
@@ -56,7 +58,7 @@ public class PlayerMovementController : MonoBehaviour
         float y = Input.GetAxis("Vertical");
         Vector2 dir = new Vector2(x, y);
 
-        spriteRenderer.flipX = dir.x < 0;
+        if (Mathf.Abs(dir.x) > 0.1f) spriteRenderer.flipX = dir.x < 0;
 
         Walk(dir);
 
@@ -126,6 +128,14 @@ public class PlayerMovementController : MonoBehaviour
         {
             groundTouch = false;
         }
+        
+        animator.SetBool("IsJumping", !coll.onGround);
+        animator.SetBool("IsMoving", rb.velocity.magnitude > 0.1f);
+        animator.SetBool("IsMovingX", Mathf.Abs(rb.velocity.x) > 0.1f );
+        animator.SetBool("IsOnWall", coll.onWall);
+        animator.SetBool("IsOnGround", coll.onGround);
+        animator.SetFloat("SpeedX", rb.velocity.x);
+        animator.SetFloat("SpeedY", rb.velocity.y);
 
         if (wallGrab || wallSlide || !canMove)
             return;
@@ -140,6 +150,8 @@ public class PlayerMovementController : MonoBehaviour
         Vector2 wallDir = coll.onRightWall ? Vector2.left : Vector2.right;
 
         Jump((Vector2.up / 1.5f + wallDir / 1.5f), true);
+        
+        animator.SetTrigger("WallJump");
 
         wallJumped = true;
     }
